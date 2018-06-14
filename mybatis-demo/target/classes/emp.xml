@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.song.firstmybatis.mapper.EmpMapper">
+  <resultMap type="com.song.firstmybatis.DEPT" id="dept">
+  	<id column="id" property="id"/>
+ 	<result column="DEPTNO" property="DEPTNO"/>
+ 	<result column="DNAME" property="DNAME"/>
+ 	<collection property="emps" ofType="com.song.firstmybatis.Emp" column="DEPTNO">
+ 		<result column="EMPNO" property="EMPNO"/>
+ 		<result column="ENAME" property="ENAME"/>
+ 	</collection>
+ </resultMap>
+ <select id="getDept" resultMap="dept">
+ 		 		select a.deptno as id, a.COUNTRY AS DNAME,a.COUNTRY AS  DEPTNO,b.ENAME,b.EMPNO from scott.dept a,(select rownum as id,a.* from (select * from scott.emp union all select * from scott.emp ) a)  b where a.deptno =b.DEPTNO
+
+  </select>
+  <select id="getEmp" resultType="com.song.firstmybatis.Emp">
+ 		 		select * from scott.emp  where rownum=1
+  </select>
+</mapper>

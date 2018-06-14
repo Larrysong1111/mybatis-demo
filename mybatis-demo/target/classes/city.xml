@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="city">
+  <resultMap type="com.song.firstmybatis.song.Country" id="country">
+ 	<result column="code" property="code"/>
+ 	<result column="name" property="name"/>
+ 	<collection property="cities" ofType="com.song.firstmybatis.City" >
+ 		<result column="population" property="population"/>
+ 		<result column="cityname" property="name"/>
+ 	</collection>
+ </resultMap>
+ <select id="getCity" resultMap="country">
+		select a.code,a.name,b.population,b.name cityname  from country a,city b where a.code=b.countrycode and a.code in('AFG','ABW')
+
+ 	</select>
+  
+	<select id="getCityById" resultType="com.song.firstmybatis.City">
+		select id,name,DistriCT  from city where id = #{id}
+
+ 	</select>
+	
+	<update id="updateCityById">
+	
+		update city set population=#{population} where id =#{id}
+	</update>
+	
+	<insert id="insertCity" useGeneratedKeys="true" keyProperty="id" >
+ 	
+ 		insert into city(name,CountryCode) values
+ 		<foreach collection="collection" item="city" separator="," > 
+ 			 (#{city.name},#{city.countryCode})
+ 		</foreach>
+ 		
+	</insert>
+</mapper>

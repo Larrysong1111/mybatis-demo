@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_map_exp_work_area">
+	<cache></cache>
+	<!-- 小区经纬度 -->
+	<resultMap type="com.song.firstmybatis.CoommunityCoordIdEntity" id="communityInfoAcquireEntity">
+	    <id property="id" column="id"/>
+	    <result property="orgCode" column="dept_code"/>
+	    <result property="communityCode" column="region_code"/>
+	    <result property="communityName" column="region_name"/>
+	    <association property="coordsEntity" javaType="com.song.firstmybatis.CoordsEntity">
+		    <result property="lng" column="longtitude"/>
+		    <result property="lat" column="lantitude"/>
+	    </association>
+	</resultMap>
+
+	<!-- 小区经纬度 -->
+	<resultMap type="com.song.firstmybatis.Employee" id="employee">
+	    <result property="empid" column="EMP_ID"/>
+	    <result property="leadid" column="LEAD_ID"/>
+	    <result property="empname" column="EMP_NAME"/>
+	    <result property="salary" column="SALARY"/>
+	     <result property="deptno" column="DEPT_NO"/>
+	</resultMap>
+ 
+	
+	<select id="communityInfoAcquire" resultMap="communityInfoAcquireEntity">
+		select id, 
+			   dept_code, 
+			   region_code, 
+			   region_name,
+			    #{item.lng} longtitude,
+			     #{item.lat} lantitude
+		  from t_map_exp_work_area
+		 <where>
+		 	<foreach collection="list" item="item" open="(" close=")" separator=" or ">
+		 	amap_min_longitude &lt; #{item.lng}
+		    and amap_max_longitude &gt; #{item.lng}
+		    and amap_min_latitude &lt; #{item.lat}
+		    and amap_max_latitude &gt; #{item.lat}
+		 	</foreach>
+		 </where>
+	</select>
+	
+	
+	<select id="employee" resultMap="employee" parameterType="map">
+		SELECT 
+			EMP_ID,
+			LEAD_ID,
+			EMP_NAME,
+			SALARY,
+			DEPT_NO
+		FROM EMPLOYEE where EMP_NAME =
+		<!--  '${param}' -->
+		 #{param}
+	</select>
+	<select id="employeee" resultMap="employee" parameterType="map">
+		select * from employee where emp_id = #{param}
+	</select>
+	<!-- 需要标注jdbcType否则异常 -->
+	<insert id="addEmployee" parameterType="map">
+		insert into EMPLOYEE(EMP_ID,
+			LEAD_ID,
+			EMP_NAME,
+			SALARY,
+			DEPT_NO)
+		values(
+		 #{EMP_ID},  
+            #{LEAD_ID},  
+            #{EMP_NAME},  
+            #{SALARY},  
+            #{DEPT_NO} 
+		)
+	</insert>
+
+ <select id="sequence" resultType="long" >
+		select seq_test.nextval from dual
+	</select>
+</mapper>
